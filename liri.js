@@ -65,12 +65,16 @@ function myTweets() {
             console.log("Error retrieving tweets");
         }
         else {
+
             for (i = 0; i < tweets.length; i++) {
+
+                //log data in log.txt
                 logData(
                     tweets.length - i + ": " + tweets[i].text + "\n" +
                     "Date: " + tweets[i].created_at + "\n"
                 );
 
+                //print data in console
                 console.log("");
                 console.log(tweets.length - i + ": " + tweets[i].text);
                 console.log("Date: " + tweets[i].created_at);
@@ -98,6 +102,8 @@ function spotifyThisSong(song) {
         }
 
         else {
+
+            //log data in log.txt
             logData(
                 "Song: " + data.tracks.items[0].name + "\n" +
                 "Artist: " + data.tracks.items[0].artists[0].name + "\n" +
@@ -105,6 +111,7 @@ function spotifyThisSong(song) {
                 "Preview link: " + data.tracks.items[0].preview_url + "\n"
             );
 
+            //print data in console
             console.log("");
             console.log("Song: " + data.tracks.items[0].name);
             console.log("Artist: " + data.tracks.items[0].artists[0].name);
@@ -126,16 +133,16 @@ function movieThis(movie) {
     }
 
     //request results from OMDB API
-    request('http://www.omdbapi.com/?apikey=trilogy&t=' + movie,
-        function (error, response, body) {
+    request('http://www.omdbapi.com/?apikey=trilogy&t=' + movie, function (error, response, body) {
 
             if (error) {
                 console.log("Error: " + error);
             }
             else {
-
+                //convert to useable JSON object
                 parsedBody = JSON.parse(body);
 
+                //log data in log.txt
                 logData(
                     "Title: " + parsedBody.Title + "\n" +
                     parsedBody.Ratings[0].Source + ": " + parsedBody.Ratings[0].Value + "\n" +
@@ -146,6 +153,7 @@ function movieThis(movie) {
                     "Actors: " + parsedBody.Actors + "\n"
                 );
 
+                //print data in console
                 console.log("");
                 console.log("Title: " + parsedBody.Title);
                 console.log(parsedBody.Ratings[0].Source + ": " + parsedBody.Ratings[0].Value);
@@ -160,7 +168,7 @@ function movieThis(movie) {
 }
 //=================================================================================================================
 
-//Do what it says:
+//Do what it says: take info from random.txt and run LIRI
 //=================================================================================================================
 function doWhatItSays() {
 
@@ -170,18 +178,21 @@ function doWhatItSays() {
         if (error) {
             console.log(error);
         }
+        else {
+            // //split string into an array w/ function to run at [0] and query at [1]
+            var dataArr = data.split(",");
 
-        // //split string into an array w/ function to run at [0] and query at [1]
-        var dataArr = data.split(",");
-
-        //set userQuery and run LIRI function
-        userQuery = dataArr[1];
-        userCommand = dataArr[0];
-        LIRI(userCommand);
+            //set userQuery and run LIRI function
+            userQuery = dataArr[1];
+            userCommand = dataArr[0];
+            LIRI(userCommand);
+        }
     })
 }
 //=================================================================================================================
 
+//Log all returned data from command line in log.txt file
+//=================================================================================================================
 function logData(data) {
     fs.appendFileSync("log.txt", data + "\n", function (err) {
         if (err) {
