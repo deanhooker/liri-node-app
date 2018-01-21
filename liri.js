@@ -21,30 +21,35 @@ const spotifyKeys = new Spotify({
 let userCommand = process.argv[2];
 let userQuery = process.argv[3];
 
-//run function depending on user input
+//LIRI function depending on user input
 //=================================================================================================================
-switch (userCommand) {
+function LIRI(command) {
+    switch (command) {
 
-    case "my-tweets":
-        myTweets();
-        console.log("Hi");
-        break;
+        case "my-tweets":
+            myTweets();
+            console.log("Hi");
+            break;
 
-    case "spotify-this-song":
-        spotifyThisSong(userQuery);
-        break;
+        case "spotify-this-song":
+            spotifyThisSong(userQuery);
+            break;
 
-    case "movie-this":
-        movieThis(userQuery);
-        break;
+        case "movie-this":
+            movieThis(userQuery);
+            break;
 
-    case "do-what-it-says":
-        doWhatItSays();
-        break;
+        case "do-what-it-says":
+            doWhatItSays();
+            break;
 
-    default:
-        console.log("ERROR: Valid commands are my-tweets, spotify-this-song, movie-this, do-what-it-says");
+        default:
+            console.log("ERROR: Valid commands are my-tweets, spotify-this-song, movie-this, do-what-it-says");
+    }
 }
+//Run function
+LIRI(userCommand);
+
 //=================================================================================================================
 
 //Twitter: Returns up to 20 of my latest tweets
@@ -94,7 +99,7 @@ function spotifyThisSong(song) {
                 console.log("Preview link: " + data.tracks.items[i].preview_url);
                 console.log("");
             }
-        }    
+        }
     });
 }
 //=================================================================================================================
@@ -111,12 +116,15 @@ function movieThis(movie) {
     //request results from OMDB API
     request('http://www.omdbapi.com/?apikey=trilogy&t=' + movie,
         function (error, response, body) {
-            
+
             if (error) {
                 console.log("Error: " + error);
             }
             else {
+
                 parsedBody = JSON.parse(body);
+
+                console.log("");
                 console.log("Title: " + parsedBody.Title);
                 console.log(parsedBody.Ratings[0].Source + ": " + parsedBody.Ratings[0].Value);
                 console.log(parsedBody.Ratings[1].Source + ": " + parsedBody.Ratings[1].Value);
@@ -124,6 +132,28 @@ function movieThis(movie) {
                 console.log("Language: " + parsedBody.Language);
                 console.log("Plot: " + parsedBody.Plot);
                 console.log("Actors: " + parsedBody.Actors);
+                console.log("");
             }
         })
+}
+//=================================================================================================================
+
+//Do what it says:
+//=================================================================================================================
+function doWhatItSays() {
+
+    fs.readFile("random.txt", "utf8", function (error, data) {
+
+        //lets user know if there's an error
+        if (error) {
+            console.log(error);
+        }
+
+        // //split string into an array w/ function to run at [0] and query at [1]
+        var dataArr = data.split(",");
+
+        //set userQuery and run LIRI function
+        userQuery = dataArr[1];
+        LIRI(dataArr[0]);
+    })
 }
