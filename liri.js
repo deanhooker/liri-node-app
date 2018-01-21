@@ -11,3 +11,23 @@ const request = require("request");
 // movie-this
 // do-what-it-says
 
+let userCommand = process.argv[2];
+
+switch (userCommand) {
+
+    case "my-tweets":
+        myTweets();
+        break;
+
+    case "spotify-this-song":
+        spotifyThisSong();
+        break;
+
+    case "movie-this":
+        movieThis();
+        break;
+
+    case "do-what-it-says":
+        doWhatItSays();
+        break;
+}
