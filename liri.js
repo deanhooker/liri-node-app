@@ -70,13 +70,13 @@ function myTweets() {
 
                 //log data in log.txt
                 logData(
-                    tweets.length - i + ": " + tweets[i].text + "\n" +
+                    i + 1 + ": " + tweets[i].text + "\n" +
                     "Date: " + tweets[i].created_at + "\n"
                 );
 
                 //print data in console
                 console.log("");
-                console.log(tweets.length - i + ": " + tweets[i].text);
+                console.log(i + 1 + ": " + tweets[i].text);
                 console.log("Date: " + tweets[i].created_at);
                 console.log("");
             }
