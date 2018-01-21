@@ -28,7 +28,6 @@ function LIRI(command) {
 
         case "my-tweets":
             myTweets();
-            console.log("Hi");
             break;
 
         case "spotify-this-song":
@@ -67,14 +66,22 @@ function myTweets() {
         }
         else {
             for (i = 0; i < tweets.length; i++) {
-                console.log("Tweet: " + tweets[i].text + " Date: " + tweets[i].created_at);
+                logData(
+                    tweets.length - i + ": " + tweets[i].text + "\n" +
+                    "Date: " + tweets[i].created_at + "\n"
+                );
+
+                console.log("");
+                console.log(tweets.length - i + ": " + tweets[i].text);
+                console.log("Date: " + tweets[i].created_at);
+                console.log("");
             }
         }
     });
 }
 //=================================================================================================================
 
-//Spotify: Returns top 3 tracks from user search
+//Spotify: Returns top track from user search
 //=================================================================================================================
 function spotifyThisSong(song) {
 
@@ -84,21 +91,26 @@ function spotifyThisSong(song) {
     };
 
     //search spotify returning top 3 tracks
-    spotifyKeys.search({ type: 'track', query: song, limit: 3 }, function (err, data) {
+    spotifyKeys.search({ type: 'track', query: song, limit: 1 }, function (err, data) {
 
         if (err) {
             return console.log('Error occurred: ' + err);
         }
 
         else {
-            for (i = 0; i < data.tracks.items.length; i++) {
-                console.log("");
-                console.log("Song: " + data.tracks.items[i].name);
-                console.log("Artist: " + data.tracks.items[i].artists[0].name);
-                console.log("Album: " + data.tracks.items[i].album.name);
-                console.log("Preview link: " + data.tracks.items[i].preview_url);
-                console.log("");
-            }
+            logData(
+                "Song: " + data.tracks.items[0].name + "\n" +
+                "Artist: " + data.tracks.items[0].artists[0].name + "\n" +
+                "Album: " + data.tracks.items[0].album.name + "\n" +
+                "Preview link: " + data.tracks.items[0].preview_url + "\n"
+            );
+
+            console.log("");
+            console.log("Song: " + data.tracks.items[0].name);
+            console.log("Artist: " + data.tracks.items[0].artists[0].name);
+            console.log("Album: " + data.tracks.items[0].album.name);
+            console.log("Preview link: " + data.tracks.items[0].preview_url);
+            console.log("");
         }
     });
 }
@@ -123,6 +135,16 @@ function movieThis(movie) {
             else {
 
                 parsedBody = JSON.parse(body);
+
+                logData(
+                    "Title: " + parsedBody.Title + "\n" +
+                    parsedBody.Ratings[0].Source + ": " + parsedBody.Ratings[0].Value + "\n" +
+                    parsedBody.Ratings[1].Source + ": " + parsedBody.Ratings[1].Value + "\n" +
+                    "Country: " + parsedBody.Country + "\n" +
+                    "Language: " + parsedBody.Language + "\n" +
+                    "Plot: " + parsedBody.Plot + "\n" +
+                    "Actors: " + parsedBody.Actors + "\n"
+                );
 
                 console.log("");
                 console.log("Title: " + parsedBody.Title);
@@ -154,6 +176,16 @@ function doWhatItSays() {
 
         //set userQuery and run LIRI function
         userQuery = dataArr[1];
-        LIRI(dataArr[0]);
+        userCommand = dataArr[0];
+        LIRI(userCommand);
     })
+}
+//=================================================================================================================
+
+function logData(data) {
+    fs.appendFileSync("log.txt", data + "\n", function (err) {
+        if (err) {
+            console.log(err);
+        }
+    });
 }
