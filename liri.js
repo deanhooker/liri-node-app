@@ -5,7 +5,7 @@ const request = require("request");
 const fs = require("fs");
 const keys = require("./keys.js");
 
-//set global variables
+//set API key variables
 const twitterKeys = new Twitter({
     consumer_key: keys.twitterKeys.consumer_key,
     consumer_secret: keys.twitterKeys.consumer_secret,
@@ -22,6 +22,7 @@ let userCommand = process.argv[2];
 let userQuery = process.argv[3];
 
 //run function depending on user input
+//=================================================================================================================
 switch (userCommand) {
 
     case "my-tweets":
@@ -34,7 +35,7 @@ switch (userCommand) {
         break;
 
     case "movie-this":
-        movieThis();
+        movieThis(userQuery);
         break;
 
     case "do-what-it-says":
@@ -44,8 +45,10 @@ switch (userCommand) {
     default:
         console.log("ERROR: Valid commands are my-tweets, spotify-this-song, movie-this, do-what-it-says");
 }
+//=================================================================================================================
 
-//Returns up to 20 of my latest tweets
+//Twitter: Returns up to 20 of my latest tweets
+//=================================================================================================================
 function myTweets() {
 
     //set retrieval parameters: username & number of tweets returned
@@ -64,8 +67,10 @@ function myTweets() {
         }
     });
 }
+//=================================================================================================================
 
-//Spotify
+//Spotify: Returns top 3 tracks from user search
+//=================================================================================================================
 function spotifyThisSong(song) {
 
     //if no query from user then default to The Sign by Ace of Base :D
@@ -79,7 +84,7 @@ function spotifyThisSong(song) {
         if (err) {
             return console.log('Error occurred: ' + err);
         }
-        
+
         else {
             for (i = 0; i < data.tracks.items.length; i++) {
                 console.log("");
@@ -92,8 +97,33 @@ function spotifyThisSong(song) {
         }    
     });
 }
+//=================================================================================================================
 
-//OMDB
-function movieThis() {
+//OMDB: Returns movie info from user search
+//=================================================================================================================
+function movieThis(movie) {
 
+    //if no user input for search, default to Mr. Nobody
+    if (!userQuery) {
+        movie = "Mr. Nobody";
+    }
+
+    //request results from OMDB API
+    request('http://www.omdbapi.com/?apikey=trilogy&t=' + movie,
+        function (error, response, body) {
+            
+            if (error) {
+                console.log("Error: " + error);
+            }
+            else {
+                parsedBody = JSON.parse(body);
+                console.log("Title: " + parsedBody.Title);
+                console.log(parsedBody.Ratings[0].Source + ": " + parsedBody.Ratings[0].Value);
+                console.log(parsedBody.Ratings[1].Source + ": " + parsedBody.Ratings[1].Value);
+                console.log("Country: " + parsedBody.Country);
+                console.log("Language: " + parsedBody.Language);
+                console.log("Plot: " + parsedBody.Plot);
+                console.log("Actors: " + parsedBody.Actors);
+            }
+        })
 }
