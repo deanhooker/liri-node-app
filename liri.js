@@ -19,6 +19,7 @@ const spotifyKeys = new Spotify({
 
 //grab user input for which function to run
 let userCommand = process.argv[2];
+let userQuery = process.argv[3];
 
 //run function depending on user input
 switch (userCommand) {
@@ -29,7 +30,7 @@ switch (userCommand) {
         break;
 
     case "spotify-this-song":
-        spotifyThisSong();
+        spotifyThisSong(userQuery);
         break;
 
     case "movie-this":
@@ -47,8 +48,10 @@ switch (userCommand) {
 //Returns up to 20 of my latest tweets
 function myTweets() {
 
+    //set retrieval parameters: username & number of tweets returned
     var params = { screen_name: 'deanhooker91', count: 20 };
 
+    //run function to return tweets
     twitterKeys.get("statuses/user_timeline", params, function (error, tweets, response) {
 
         if (error) {
@@ -63,16 +66,34 @@ function myTweets() {
 }
 
 //Spotify
-function spotifyThisSong() {
-    spotifyKeys.search({ type: 'track', query: process.argv[3], limit: 2 }, function (err, data) {
+function spotifyThisSong(song) {
+
+    //if no query from user then default to The Sign by Ace of Base :D
+    if (!userQuery) {
+        song = "The Sign Ace";
+    };
+
+    //search spotify returning top 3 tracks
+    spotifyKeys.search({ type: 'track', query: song, limit: 3 }, function (err, data) {
+
         if (err) {
             return console.log('Error occurred: ' + err);
         }
+        
         else {
-            console.log("Song: " + data.tracks.items[0].name);
-            console.log("Artist: " + data.tracks.items[0].artists[0].name);
-            console.log("Album: " + data.tracks.items[0].album.name);
-            console.log("Preview link: " + data.tracks.items[0].preview_url);
-        }
+            for (i = 0; i < data.tracks.items.length; i++) {
+                console.log("");
+                console.log("Song: " + data.tracks.items[i].name);
+                console.log("Artist: " + data.tracks.items[i].artists[0].name);
+                console.log("Album: " + data.tracks.items[i].album.name);
+                console.log("Preview link: " + data.tracks.items[i].preview_url);
+                console.log("");
+            }
+        }    
     });
+}
+
+//OMDB
+function movieThis() {
+
 }
